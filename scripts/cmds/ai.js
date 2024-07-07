@@ -1,61 +1,39 @@
-const axios = require('axios');
-
-const GPT_API_URL = 'https://sandipapi.onrender.com/gpt';
-const PREFIXES = ['ai'];
-const horizontalLine = "━━━━━━━━━━━━━━━";
+const {get} = require("axios"),
+  url = "http://eu4.diresnode.com:3301";
 
 module.exports = {
-  config: {
-    name: "ai",
-    version: 1.0,
-    author: "OtinXSandip",
-    longDescription: "AI",
-    category: "ai",
-    guide: {
-      en: "{p} questions",
-    },
+config: {
+  name: "ai",
+  aliases: ["jjk"],
+  version: "1.0.0",
+  author: "Deku",
+  countDown: 0,
+  role: 0,
+  shortDescription: {
+    en: "Talk to GOJO AI (continues conversation)",
   },
-  onStart: async function () {
-    // Initialization logic if needed
+  longDescription: {
+    en: "Talk to GOJO AI (continues conversation)",
   },
-  onChat: async function ({ api, event, args, message }) {
-    try {
-      const prefix = PREFIXES.find((p) => event.body && event.body.toLowerCase().startsWith(p));
+  category: "ai",
+  guide: {
+    en: "gojo <ask> or gojo <clear> to reset conversation."
+  },
+},
 
-      if (!prefix) {
-        return; // Invalid prefix, ignore the command
-      }
-
-      const prompt = event.body.substring(prefix.length).trim();
-
-      if (!prompt) {
-        const defaultMessage = getCenteredHeader("") + "\n" + horizontalLine + "\nProvide a Question\n" + horizontalLine;
-        await message.reply(defaultMessage);
-        return;
-      }
-
-      const answer = await getGPTResponse(prompt);
-
-      // Adding header and horizontal lines to the answer
-      const answerWithHeader = getCenteredHeader("") + "\n" + horizontalLine + "\n" + answer + "\n" + horizontalLine;
-      
-      await message.reply(answerWithHeader);
-    } catch (error) {
-      console.error("Error:", error.message);
-      // Additional error handling if needed
-    }
-  }
+onStart: async function ({ api, event, args }) {
+  try {
+   let prompt = args.join(' '), id = event.senderID;
+         async function r(msg){
+               api.sendMessage(msg, event.threadID, event.messageID)
+           }
+          if(!prompt) return r("Missing input!\n\nIf you want to reset the conversation with "+this.config.name+" you can use “"+this.config.name+" clear”");
+          r("🔍…");
+          const res = await get(url+"/gojo_gpt?prompt="+prompt+"&idd="+id);
+              return r(res.data.gojo);
+     } catch (error) {
+    console.error("Error:", error);
+    return api.sendMessage(error.message, event.threadID, event.messageID)
+   }
+ }
 };
-
-function getCenteredHeader(header) {
-  const totalWidth = 32; // Adjust the total width as needed
-  const padding = Math.max(0, Math.floor((totalWidth - header.length) / 2));
-  return " ".repeat(padding) + header;
-}
-
-async function getGPTResponse(prompt) {
-  // Implement caching logic here
-
-  const response = await axios.get(`${GPT_API_URL}?prompt=${encodeURIComponent(prompt)}`);
-  return response.data.answer;
-}
