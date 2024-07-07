@@ -5,8 +5,8 @@ if (!global.temp.welcomeEvent)
 module.exports = {
 	config: {
 		name: "welcome",
-		version: "1.7",
-		author: "NTKhang",
+		version: "1.5",
+		author: "Aziz",
 		category: "events"
 	},
 
@@ -26,10 +26,10 @@ module.exports = {
 			session2: "noon",
 			session3: "afternoon",
 			session4: "evening",
-			welcomeMessage: "Thank you for inviting me to the group!\nBot prefix: %1\nTo view the list of commands, please enter: %1help",
+			welcomeMessage: "🖐🖐😜IM JUMPED HERE,HOW MANY KANGROO HERE 🥺🤳",
 			multiple1: "you",
 			multiple2: "you guys",
-			defaultWelcomeMessage: `Hello {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
+			defaultWelcomeMessage: `𝙒𝙀𝙇𝘾𝙊𝙈𝙀 😜😜!\nHello, {userName} have fun with us!(⁠ㆁ⁠ω⁠ㆁ⁠)`
 		}
 	},
 
@@ -54,18 +54,15 @@ module.exports = {
 						dataAddedParticipants: []
 					};
 
-				// push new member to array
 				global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAddedParticipants);
-				// if timeout is set, clear it
 				clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
 
-				// set new timeout
 				global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async function () {
+					const dataAddedParticipants = global.temp.welcomeEvent[threadID].dataAddedParticipants;
 					const threadData = await threadsData.get(threadID);
+					const dataBanned = threadData.data.banned_ban || [];
 					if (threadData.settings.sendWelcomeMessage == false)
 						return;
-					const dataAddedParticipants = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-					const dataBanned = threadData.data.banned_ban || [];
 					const threadName = threadData.threadName;
 					const userName = [],
 						mentions = [];
