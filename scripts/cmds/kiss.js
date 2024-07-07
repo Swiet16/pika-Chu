@@ -5,7 +5,7 @@ const request = require("node-superfetch");
 
 module.exports = {
 	config: {
-		name: "lick",
+		name: "kiss",
 		version: "1.1",
 		author: "jun",
 		countDown: 5,
